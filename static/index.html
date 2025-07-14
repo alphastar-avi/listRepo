@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            background-color: rgb(39, 40, 58);
+            color: bisque;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .title{
+            font-size: 4rem;
+        }
+        #username{
+            width: 22rem;
+            height: 2.5rem;
+            font-size: large;
+            border-radius: 1.2rem;
+            padding-left: 1rem;
+        }
+        #token{
+            width: 22rem;
+            height: 2.5rem;
+            font-size: larger;
+            border-radius: 1.2rem;
+            padding-left: 1rem;
+            margin-top: 1rem;
+        }
+        #bt1{
+            width: 9rem;
+            height: 2.5rem;
+            font-size: large;
+            font-weight: bold;
+            color: rgb(254, 254, 254);
+            border-radius: 0.7rem;
+            background-color: rgb(151, 193, 220);
+            border: 0rem;
+            cursor: pointer;
+            margin-top: 2rem;
+        }
+        #repoList{
+            margin-top: 2rem;
+        }
+
+    </style>
+</head>
+<body>
+    <h1 class="title">listRepo</h1>
+    <input id="username" type="text" placeholder="Enter your github username">
+    <input id="token" type="text" placeholder="Enter your PAT token">
+    <button id="bt1" onclick="getRepo()">Get REPOS</button>
+
+    <ol id="repoList"></ol>
+
+    <script>
+        async function getRepo() {
+            const username = document.getElementById('username').value;
+            const token = document.getElementById('token').value;
+
+            const response = await fetch('/repos',{
+                method: 'POST',
+                headers: {'content-Type': 'application/json'},
+                body: JSON.stringify({username,token})
+            });
+
+            const data = await response.json();
+            const list = document.getElementById('repoList');
+            list.innerHTML = '';
+            if(data.error){
+                list.innerHTML= `<li> Error: ${data.error}</li>`;
+                return;
+            }
+
+            data.repos.forEach(name => {
+                const li = document.createElement('li');
+                li.textContent = name;
+                list.appendChild(li);
+            });
+        }
+    </script>
+
+</body>
+</html>
